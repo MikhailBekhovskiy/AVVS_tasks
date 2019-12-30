@@ -16,7 +16,17 @@ double** newMatrix (int n, int m){
     }
 }
 
-double** matrMult (double** A, double** B, int n, int m, int k){
+double** newMatrix0 (int n, int m){
+    double** Result = new double*[n];
+    for (int i=0;i<n;++i){
+        Result[i] = new double[n];
+        for (int j=0;j<m;++j){
+            Result[i][j] = 0;
+        }
+    }
+}
+
+double** matrProd (double** A, double** B, int n, int m, int k){
     double **result = new double*[n];
     for (int i = 0; i<n;++i){
         result[i] = new double[k];
