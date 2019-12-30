@@ -40,7 +40,7 @@ double** prodParallel(double** A, double** B, int n, int m, int k) {
 int main(){
     double** A = newMatrix(n, m);
     double** B = newMatrix(m, k);
-    auto C = printExecTime(matrProd, A, B, n, m, k);
+    auto C = printExecTime(matrProd, A, B, n, m, k); //function from aux.hpp
     auto D = printExecTime(prodParallel, A, B, n, m, k);
     if (C==D){
         cout << "Same results" << endl;
