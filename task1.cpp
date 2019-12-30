@@ -1,5 +1,6 @@
 #include <iostream>
 #include "aux.hpp"
+#include <chrono>
 using namespace std;
 
 int rows = 1000;
@@ -29,11 +30,62 @@ double maxInArray(double* b, int n){
     return result;
 }
 
+double maxFromMinsSeq(double** A, int n, int m){
+    double* rowMins = minsInRows(A, n, m);
+    double result = maxInArray(rowMins, n);
+    cout << "Max: " << result << endl;
+    return result;
+}
+
+double maxFromMinsParallel(double** A, int n, int m) {
+    int rows = n;
+    int cols = m;
+    int rowMin[rows];
+    int max = -1000;
+#pragma omp parallel shared(A, rows, cols, max, rowMin) default(none)
+    {
+#pragma omp for
+        for (int i = 0; i < rows; ++i) {
+            rowMin[i] = A[i][0];
+        }
+
+#pragma omp for
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 1; j < cols; ++j) {
+                if (A[i][j] < rowMin[i]) {
+                    rowMin[i] = A[i][j];
+                }
+            }
+        }
+
+#pragma omp for reduction(max:max)
+        for (int i = 0; i < rows; ++i) {
+            if (max < rowMin[i]) {
+                max = rowMin[i];
+            }
+        }
+    };
+
+    cout << "Max: " << max << endl;
+
+    return max;
+}
+
+template <typename F>
+void printExecTime(F &function, double** A, int n, int m) {
+    auto start = chrono::high_resolution_clock::now();
+    function(A, n, m);
+    auto end = chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>
+                            (end - start).count() / 1e9;
+    cout << "Elapsed time: " << duration << endl;
+
+}
 
 int main(){
     double** A = newMatrix(rows, columns);
-    double* minimums = minsInRows(A, rows, columns);
-    double max = maxInArray(minimums, rows);
+    printExecTime(maxFromMinsSeq, A, rows, columns);
+    printExecTime(maxFromMinsParallel, A, rows, columns);
 
 
 
