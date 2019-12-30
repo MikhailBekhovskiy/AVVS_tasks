@@ -4,7 +4,6 @@
 #include <random>
 #include <ctime>
 
-
 double** newMatrix (int n, int m){
     srand(time(NULL));
     double** Result = new double*[n];
@@ -14,6 +13,15 @@ double** newMatrix (int n, int m){
             Result[i][j] = (-100 + rand()%100);
         }
     }
+}
+
+double* newVector (int n){
+    srand(time(NULL));
+    double* result = new double[n];
+    for(int i=0;i<n;++i){
+        result[i] = (-100+rand()%100);
+    }
+    return result;
 }
 
 double** newMatrix0 (int n, int m){
@@ -43,7 +51,6 @@ double** matrProd (double** A, double** B, int n, int m, int k){
     }
     return result;
 }
-
 
 
 #endif
